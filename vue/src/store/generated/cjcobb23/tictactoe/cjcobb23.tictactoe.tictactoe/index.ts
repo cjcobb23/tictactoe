@@ -259,6 +259,21 @@ export default {
 		},
 		
 		
+		async sendMsgAccept({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgAccept(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgAccept:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgAccept:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgInvite({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -289,22 +304,20 @@ export default {
 				}
 			}
 		},
-		async sendMsgAccept({ rootGetters }, { value, fee = [], memo = '' }) {
+		
+		async MsgAccept({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
 				const msg = await txClient.msgAccept(value)
-				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
-	gas: "200000" }, memo})
-				return result
+				return msg
 			} catch (e) {
 				if (e == MissingWalletError) {
 					throw new Error('TxClient:MsgAccept:Init Could not initialize signing client. Wallet is required.')
-				}else{
-					throw new Error('TxClient:MsgAccept:Send Could not broadcast Tx: '+ e.message)
+				} else{
+					throw new Error('TxClient:MsgAccept:Create Could not create message: ' + e.message)
 				}
 			}
 		},
-		
 		async MsgInvite({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -328,19 +341,6 @@ export default {
 					throw new Error('TxClient:MsgMove:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgMove:Create Could not create message: ' + e.message)
-				}
-			}
-		},
-		async MsgAccept({ rootGetters }, { value }) {
-			try {
-				const txClient=await initTxClient(rootGetters)
-				const msg = await txClient.msgAccept(value)
-				return msg
-			} catch (e) {
-				if (e == MissingWalletError) {
-					throw new Error('TxClient:MsgAccept:Init Could not initialize signing client. Wallet is required.')
-				} else{
-					throw new Error('TxClient:MsgAccept:Create Could not create message: ' + e.message)
 				}
 			}
 		},

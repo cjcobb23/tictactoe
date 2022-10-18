@@ -4,15 +4,15 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgAccept } from "./types/tictactoe/tx";
 import { MsgInvite } from "./types/tictactoe/tx";
 import { MsgMove } from "./types/tictactoe/tx";
-import { MsgAccept } from "./types/tictactoe/tx";
 
 
 const types = [
+  ["/cjcobb23.tictactoe.tictactoe.MsgAccept", MsgAccept],
   ["/cjcobb23.tictactoe.tictactoe.MsgInvite", MsgInvite],
   ["/cjcobb23.tictactoe.tictactoe.MsgMove", MsgMove],
-  ["/cjcobb23.tictactoe.tictactoe.MsgAccept", MsgAccept],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -45,9 +45,9 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
+    msgAccept: (data: MsgAccept): EncodeObject => ({ typeUrl: "/cjcobb23.tictactoe.tictactoe.MsgAccept", value: MsgAccept.fromPartial( data ) }),
     msgInvite: (data: MsgInvite): EncodeObject => ({ typeUrl: "/cjcobb23.tictactoe.tictactoe.MsgInvite", value: MsgInvite.fromPartial( data ) }),
     msgMove: (data: MsgMove): EncodeObject => ({ typeUrl: "/cjcobb23.tictactoe.tictactoe.MsgMove", value: MsgMove.fromPartial( data ) }),
-    msgAccept: (data: MsgAccept): EncodeObject => ({ typeUrl: "/cjcobb23.tictactoe.tictactoe.MsgAccept", value: MsgAccept.fromPartial( data ) }),
     
   };
 };
