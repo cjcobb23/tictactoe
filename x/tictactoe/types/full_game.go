@@ -33,19 +33,21 @@ func (storedGame StoredGame) Move(player string, x uint64, y uint64) (game *rule
     if game.Winner != rules.NoPlayer || game.Draw {
         return game,ErrGameAlreadyOver
     }
+    p := rules.NoPlayer
 	if player == storedGame.O {
 		if game.Turn != rules.OPlayer {
 			return game,sdkerrors.Wrapf(ErrNotPlayerTurn, "%s", player)
 		}
-		err = game.Move(rules.OPlayer, x, y)
+        p = rules.OPlayer
 	} else if player == storedGame.X {
-		err = game.Move(rules.XPlayer, x, y)
 		if game.Turn != rules.XPlayer {
 			return game,sdkerrors.Wrapf(ErrNotPlayerTurn, "%s", player)
 		}
+        p = rules.XPlayer
 	} else {
 		return game,sdkerrors.Wrapf(ErrCreatorNotPlayer, "%s", player)
 	}
+    err = game.Move(p,x,y)
 	if err != nil {
 		return game,sdkerrors.Wrapf(ErrInvalidMove, "%s", err.Error())
 	}

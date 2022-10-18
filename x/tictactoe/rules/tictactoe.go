@@ -110,6 +110,9 @@ func (game *Game) DidMoveWin(x uint64, y uint64) bool {
 func Parse(s string) (*Game, error) {
 	game := &Game{}
     state := []byte(s)
+    if len(state) != 3 {
+        panic("invalid state!")
+    }
     if state[0] & 1 != 0 {
         game.Turn = XPlayer
     } else {
