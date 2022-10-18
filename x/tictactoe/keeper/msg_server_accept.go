@@ -2,6 +2,7 @@ package keeper
 
 import (
     "context"
+    "strconv"
 
     "github.com/cjcobb23/tictactoe/x/tictactoe/rules"
     "github.com/cjcobb23/tictactoe/x/tictactoe/types"
@@ -17,16 +18,16 @@ func (k msgServer) Accept(goCtx context.Context, msg *types.MsgAccept) (*types.M
     if !found {
         return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", msg.GameIndex)
     }
-    if storedGame.Board != "" {
+    if storedGame.State != "" {
         return nil, sdkerrors.Wrapf(types.ErrGameAlreadyAccepted, "%s", msg.GameIndex)
     }
     newGame := &rules.Game{}
-    storedGame.Board = newGame.String()
+    storedGame.State = newGame.String()
     k.Keeper.SetStoredGame(ctx, storedGame)
     ctx.EventManager().EmitEvent(
         sdk.NewEvent(types.InviteAcceptedEventType,
         sdk.NewAttribute(types.InviteAcceptedEventCreator, msg.Creator),
-        sdk.NewAttribute(types.InviteAcceptedEventGameIndex, msg.GameIndex),
+        sdk.NewAttribute(types.InviteAcceptedEventGameIndex, strconv.FormatUint(msg.GameIndex,10)),
         sdk.NewAttribute(types.InviteAcceptedXPlayer, storedGame.X),
         sdk.NewAttribute(types.InviteAcceptedOPlayer, storedGame.O)))
         return &types.MsgAcceptResponse{}, nil

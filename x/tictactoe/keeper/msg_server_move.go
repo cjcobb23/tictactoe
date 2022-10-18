@@ -6,6 +6,7 @@ import (
     "strconv"
 
     "github.com/cjcobb23/tictactoe/x/tictactoe/types"
+    "github.com/cjcobb23/tictactoe/x/tictactoe/rules"
     sdk "github.com/cosmos/cosmos-sdk/types"
     sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -19,30 +20,26 @@ func (k msgServer) Move(goCtx context.Context, msg *types.MsgMove) (*types.MsgMo
         return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", msg.GameIndex)
     }
 
-    if storedGame.Board == "" {
+    if storedGame.State == "" {
         return nil, sdkerrors.Wrapf(types.ErrGameNotAccepted, "%s", msg.GameIndex)
     }
-    if storedGame.Winner != "" {
-        return nil, sdkerrors.Wrapf(types.ErrGameAlreadyOver, "%s", msg.GameIndex)
-    }
-    x, err := strconv.ParseUint(msg.X, 10, 64)
-    if err != nil {
-        return nil, err
-    }
-    y, err := strconv.ParseUint(msg.Y, 10, 64)
-    if err != nil {
-        return nil, err
-    }
-    err = storedGame.Move(msg.Creator, x, y)
+    game,err := storedGame.Move(msg.Creator, msg.X, msg.Y)
     if err != nil {
         return nil, err
     }
     k.Keeper.SetStoredGame(ctx, storedGame)
-    winner := storedGame.Winner
+    winner := ""
+    if game.Winner == rules.XPlayer {
+        winner = "X"
+    } else if game.Winner == rules.OPlayer {
+        winner = "O"
+    } else if game.Draw {
+        winner = "Draw"
+    }
     ctx.EventManager().EmitEvent(
         sdk.NewEvent(types.MovePlayedEventType,
         sdk.NewAttribute(types.MovePlayedEventCreator, msg.Creator),
-        sdk.NewAttribute(types.MovePlayedEventGameIndex, msg.GameIndex),
+        sdk.NewAttribute(types.MovePlayedEventGameIndex, strconv.FormatUint(msg.GameIndex,10)),
         sdk.NewAttribute(types.MovePlayedEventWinner, winner)))
         return &types.MsgMoveResponse{Winner: winner}, nil
 }
