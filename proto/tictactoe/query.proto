@@ -5,6 +5,8 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "tictactoe/params.proto";
+import "tictactoe/system_info.proto";
+import "tictactoe/stored_game.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/cjcobb23/tictactoe/x/tictactoe/types";
@@ -15,7 +17,26 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/cjcobb23/tictactoe/tictactoe/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a SystemInfo by index.
+	rpc SystemInfo(QueryGetSystemInfoRequest) returns (QueryGetSystemInfoResponse) {
+		option (google.api.http).get = "/cjcobb23/tictactoe/tictactoe/system_info";
+	}
+// Queries a StoredGame by index.
+	rpc StoredGame(QueryGetStoredGameRequest) returns (QueryGetStoredGameResponse) {
+		option (google.api.http).get = "/cjcobb23/tictactoe/tictactoe/stored_game/{index}";
+	}
+
+	// Queries a list of StoredGame items.
+	rpc StoredGameAll(QueryAllStoredGameRequest) returns (QueryAllStoredGameResponse) {
+		option (google.api.http).get = "/cjcobb23/tictactoe/tictactoe/stored_game";
+	}
+
+// Queries a list of CanPlayMove items.
+	rpc CanPlayMove(QueryCanPlayMoveRequest) returns (QueryCanPlayMoveResponse) {
+		option (google.api.http).get = "/cjcobb23/tictactoe/tictactoe/can_play_move/{gameIndex}/{player}/{x}/{y}";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +46,41 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetSystemInfoRequest {}
+
+message QueryGetSystemInfoResponse {
+	SystemInfo SystemInfo = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetStoredGameRequest {
+	  uint64 index = 1;
+
+}
+
+message QueryGetStoredGameResponse {
+	StoredGame storedGame = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllStoredGameRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllStoredGameResponse {
+	repeated StoredGame storedGame = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryCanPlayMoveRequest {
+  uint64 gameIndex = 1;
+  string player = 2;
+  uint64 x = 3;
+  uint64 y = 4;
+}
+
+message QueryCanPlayMoveResponse {
+  bool possible = 1;
+  string reason = 2;
 }
 
 // this line is used by starport scaffolding # 3

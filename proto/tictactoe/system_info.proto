@@ -1,0 +1,9 @@
+syntax = "proto3";
+package cjcobb23.tictactoe.tictactoe;
+
+option go_package = "github.com/cjcobb23/tictactoe/x/tictactoe/types";
+
+message SystemInfo {
+  uint64 nextId = 1; 
+  
+}

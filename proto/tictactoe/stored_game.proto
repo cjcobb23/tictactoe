@@ -1,0 +1,13 @@
+syntax = "proto3";
+package cjcobb23.tictactoe.tictactoe;
+
+option go_package = "github.com/cjcobb23/tictactoe/x/tictactoe/types";
+
+message StoredGame {
+  uint64 index = 1; 
+  string state = 2; 
+  string x = 3; 
+  string o = 4; 
+  
+}
+

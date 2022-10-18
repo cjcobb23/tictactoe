@@ -24,7 +24,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgInvite = "op_weight_msg_invite"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgInvite int = 100
+
+	opWeightMsgAccept = "op_weight_msg_accept"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgAccept int = 100
+
+	opWeightMsgMove = "op_weight_msg_move"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgMove int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -57,6 +69,39 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgInvite int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgInvite, &weightMsgInvite, nil,
+		func(_ *rand.Rand) {
+			weightMsgInvite = defaultWeightMsgInvite
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgInvite,
+		tictactoesimulation.SimulateMsgInvite(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgAccept int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAccept, &weightMsgAccept, nil,
+		func(_ *rand.Rand) {
+			weightMsgAccept = defaultWeightMsgAccept
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgAccept,
+		tictactoesimulation.SimulateMsgAccept(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgMove int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgMove, &weightMsgMove, nil,
+		func(_ *rand.Rand) {
+			weightMsgMove = defaultWeightMsgMove
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgMove,
+		tictactoesimulation.SimulateMsgMove(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
