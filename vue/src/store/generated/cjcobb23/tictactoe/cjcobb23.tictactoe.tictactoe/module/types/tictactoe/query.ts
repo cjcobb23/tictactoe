@@ -55,6 +55,20 @@ export interface QueryCanPlayMoveResponse {
   reason: string;
 }
 
+export interface QueryStoredGameHumanRequest {
+  gameIndex: number;
+}
+
+export interface QueryStoredGameHumanResponse {
+  gameIndex: number;
+  board: string;
+  turn: string;
+  winner: string;
+  draw: boolean;
+  x: string;
+  o: string;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -798,6 +812,254 @@ export const QueryCanPlayMoveResponse = {
   },
 };
 
+const baseQueryStoredGameHumanRequest: object = { gameIndex: 0 };
+
+export const QueryStoredGameHumanRequest = {
+  encode(
+    message: QueryStoredGameHumanRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.gameIndex !== 0) {
+      writer.uint32(8).uint64(message.gameIndex);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryStoredGameHumanRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryStoredGameHumanRequest,
+    } as QueryStoredGameHumanRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.gameIndex = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryStoredGameHumanRequest {
+    const message = {
+      ...baseQueryStoredGameHumanRequest,
+    } as QueryStoredGameHumanRequest;
+    if (object.gameIndex !== undefined && object.gameIndex !== null) {
+      message.gameIndex = Number(object.gameIndex);
+    } else {
+      message.gameIndex = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryStoredGameHumanRequest): unknown {
+    const obj: any = {};
+    message.gameIndex !== undefined && (obj.gameIndex = message.gameIndex);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryStoredGameHumanRequest>
+  ): QueryStoredGameHumanRequest {
+    const message = {
+      ...baseQueryStoredGameHumanRequest,
+    } as QueryStoredGameHumanRequest;
+    if (object.gameIndex !== undefined && object.gameIndex !== null) {
+      message.gameIndex = object.gameIndex;
+    } else {
+      message.gameIndex = 0;
+    }
+    return message;
+  },
+};
+
+const baseQueryStoredGameHumanResponse: object = {
+  gameIndex: 0,
+  board: "",
+  turn: "",
+  winner: "",
+  draw: false,
+  x: "",
+  o: "",
+};
+
+export const QueryStoredGameHumanResponse = {
+  encode(
+    message: QueryStoredGameHumanResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.gameIndex !== 0) {
+      writer.uint32(8).uint64(message.gameIndex);
+    }
+    if (message.board !== "") {
+      writer.uint32(18).string(message.board);
+    }
+    if (message.turn !== "") {
+      writer.uint32(26).string(message.turn);
+    }
+    if (message.winner !== "") {
+      writer.uint32(34).string(message.winner);
+    }
+    if (message.draw === true) {
+      writer.uint32(40).bool(message.draw);
+    }
+    if (message.x !== "") {
+      writer.uint32(50).string(message.x);
+    }
+    if (message.o !== "") {
+      writer.uint32(58).string(message.o);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryStoredGameHumanResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryStoredGameHumanResponse,
+    } as QueryStoredGameHumanResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.gameIndex = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.board = reader.string();
+          break;
+        case 3:
+          message.turn = reader.string();
+          break;
+        case 4:
+          message.winner = reader.string();
+          break;
+        case 5:
+          message.draw = reader.bool();
+          break;
+        case 6:
+          message.x = reader.string();
+          break;
+        case 7:
+          message.o = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryStoredGameHumanResponse {
+    const message = {
+      ...baseQueryStoredGameHumanResponse,
+    } as QueryStoredGameHumanResponse;
+    if (object.gameIndex !== undefined && object.gameIndex !== null) {
+      message.gameIndex = Number(object.gameIndex);
+    } else {
+      message.gameIndex = 0;
+    }
+    if (object.board !== undefined && object.board !== null) {
+      message.board = String(object.board);
+    } else {
+      message.board = "";
+    }
+    if (object.turn !== undefined && object.turn !== null) {
+      message.turn = String(object.turn);
+    } else {
+      message.turn = "";
+    }
+    if (object.winner !== undefined && object.winner !== null) {
+      message.winner = String(object.winner);
+    } else {
+      message.winner = "";
+    }
+    if (object.draw !== undefined && object.draw !== null) {
+      message.draw = Boolean(object.draw);
+    } else {
+      message.draw = false;
+    }
+    if (object.x !== undefined && object.x !== null) {
+      message.x = String(object.x);
+    } else {
+      message.x = "";
+    }
+    if (object.o !== undefined && object.o !== null) {
+      message.o = String(object.o);
+    } else {
+      message.o = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryStoredGameHumanResponse): unknown {
+    const obj: any = {};
+    message.gameIndex !== undefined && (obj.gameIndex = message.gameIndex);
+    message.board !== undefined && (obj.board = message.board);
+    message.turn !== undefined && (obj.turn = message.turn);
+    message.winner !== undefined && (obj.winner = message.winner);
+    message.draw !== undefined && (obj.draw = message.draw);
+    message.x !== undefined && (obj.x = message.x);
+    message.o !== undefined && (obj.o = message.o);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryStoredGameHumanResponse>
+  ): QueryStoredGameHumanResponse {
+    const message = {
+      ...baseQueryStoredGameHumanResponse,
+    } as QueryStoredGameHumanResponse;
+    if (object.gameIndex !== undefined && object.gameIndex !== null) {
+      message.gameIndex = object.gameIndex;
+    } else {
+      message.gameIndex = 0;
+    }
+    if (object.board !== undefined && object.board !== null) {
+      message.board = object.board;
+    } else {
+      message.board = "";
+    }
+    if (object.turn !== undefined && object.turn !== null) {
+      message.turn = object.turn;
+    } else {
+      message.turn = "";
+    }
+    if (object.winner !== undefined && object.winner !== null) {
+      message.winner = object.winner;
+    } else {
+      message.winner = "";
+    }
+    if (object.draw !== undefined && object.draw !== null) {
+      message.draw = object.draw;
+    } else {
+      message.draw = false;
+    }
+    if (object.x !== undefined && object.x !== null) {
+      message.x = object.x;
+    } else {
+      message.x = "";
+    }
+    if (object.o !== undefined && object.o !== null) {
+      message.o = object.o;
+    } else {
+      message.o = "";
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -818,6 +1080,10 @@ export interface Query {
   CanPlayMove(
     request: QueryCanPlayMoveRequest
   ): Promise<QueryCanPlayMoveResponse>;
+  /** Queries a list of StoredGameHuman items. */
+  StoredGameHuman(
+    request: QueryStoredGameHumanRequest
+  ): Promise<QueryStoredGameHumanResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -888,6 +1154,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCanPlayMoveResponse.decode(new Reader(data))
+    );
+  }
+
+  StoredGameHuman(
+    request: QueryStoredGameHumanRequest
+  ): Promise<QueryStoredGameHumanResponse> {
+    const data = QueryStoredGameHumanRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cjcobb23.tictactoe.tictactoe.Query",
+      "StoredGameHuman",
+      data
+    );
+    return promise.then((data) =>
+      QueryStoredGameHumanResponse.decode(new Reader(data))
     );
   }
 }

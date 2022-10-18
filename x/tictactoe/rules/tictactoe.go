@@ -19,16 +19,16 @@ type Board struct {
 type Player int64
 
 const (
-    NoPlayer Player = iota
+	NoPlayer Player = iota
 	XPlayer
 	OPlayer
 )
 
 type Game struct {
-	Board Board
-	Turn  Player
-    Winner Player
-    Draw bool
+	Board  Board
+	Turn   Player
+	Winner Player
+	Draw   bool
 }
 
 func GetPlayerCell(player Player) CellState {
@@ -58,11 +58,11 @@ func (game *Game) Move(player Player, x uint64, y uint64) error {
 		cells[x][y] = O
 		game.Turn = XPlayer
 	}
-    if game.DidMoveWin(x, y) {
-        game.Winner = player
-    } else if !game.AreMovesLeft() {
-        game.Draw = true
-    }
+	if game.DidMoveWin(x, y) {
+		game.Winner = player
+	} else if !game.AreMovesLeft() {
+		game.Draw = true
+	}
 	return nil
 }
 
@@ -107,42 +107,59 @@ func (game *Game) DidMoveWin(x uint64, y uint64) bool {
 
 }
 
-func Parse(s string) (*Game, error) {
-	game := &Game{}
-    state := []byte(s)
-    if len(state) != 3 {
-        panic("invalid state!")
-    }
-    if state[0] & 1 != 0 {
-        game.Turn = XPlayer
-    } else {
-        game.Turn = OPlayer
-    }
-    if state[0] & 6 != 0 {
-        game.Draw = true
-    } else if state[0] & 2 != 0 {
-        game.Winner = OPlayer
-    } else if state[0] & 4 != 0 {
-        game.Winner = XPlayer
-    } else {
-        game.Winner = NoPlayer
-    }
+func NewGame() *Game {
+    game := &Game{}
+    game.Turn = XPlayer
+    game.Winner = NoPlayer
+    game.Draw = false
     cells := game.Board.Cells
-    offset := 3
+    for x := 0; x < len(cells); x++ {
+        for y := 0; y < len(cells[x]); y++ {
+            cells[x][y] = Empty
+        }
+    }
+    return game
+}
+
+func Parse(s string) (*Game, error) {
+    if s == "" {
+        return NewGame(), nil
+    }
+	game := &Game{}
+	state := []byte(s)
+	if len(state) != 3 {
+		panic("invalid state!")
+	}
+	if state[0]&1 != 0 {
+		game.Turn = XPlayer
+	} else {
+		game.Turn = OPlayer
+	}
+	if state[0]&6 != 0 {
+		game.Draw = true
+	} else if state[0]&2 != 0 {
+		game.Winner = OPlayer
+	} else if state[0]&4 != 0 {
+		game.Winner = XPlayer
+	} else {
+		game.Winner = NoPlayer
+	}
+	cells := game.Board.Cells
+	offset := 3
 	for x := 0; x < len(cells); x++ {
 		for y := 0; y < len(cells[x]); y++ {
-            idx := offset + (x*3 + y)*2
-            b := offset / 8
-            s := idx % 8
-            o := byte(1 << s)
-            x := byte(2 << s)
-            if state[b] & o != 0 {
-                cells[x][y] = O
-            } else if state[b] & x != 0 {
-                cells[x][y] = X
-            } else {
-                cells[x][y] = Empty
-            }
+			idx := offset + (x*3+y)*2
+			b := offset / 8
+			s := idx % 8
+			o := byte(1 << s)
+			x := byte(2 << s)
+			if state[b]&o != 0 {
+				cells[x][y] = O
+			} else if state[b]&x != 0 {
+				cells[x][y] = X
+			} else {
+				cells[x][y] = Empty
+			}
 		}
 	}
 
@@ -161,40 +178,40 @@ func ParsePlayer(s string) (Player, error) {
 }
 
 func (game *Game) String() string {
-    // we encode the state as 3 bytes.
-    // the first bit is for whose turn it is. 0 for O, and 1 for X
-    // the next two bits are for the winner:
-    // 0 for no winner, 1 for O,2 for X, 3 for Draw
-    // the remaining bits are for the state of the board. Each cell is
-    // represented by two bits. 0 for empty, 1 for O, 2 for X
-	state := []byte{0,0,0}
-    if game.Turn == XPlayer {
-        state[0] |= 1
-    }
-    if game.Winner != NoPlayer {
-        if game.Winner == OPlayer {
-            state[0] |= 2
-        } else if game.Winner == XPlayer {
-            state[0] |= 4
-        }
-    }
-    if game.Draw {
-        state[0] |= 6
-    }
-    cells := game.Board.Cells
-    offset := 3
+	// we encode the state as 3 bytes.
+	// the first bit is for whose turn it is. 0 for O, and 1 for X
+	// the next two bits are for the winner:
+	// 0 for no winner, 1 for O,2 for X, 3 for Draw
+	// the remaining bits are for the state of the board. Each cell is
+	// represented by two bits. 0 for empty, 1 for O, 2 for X
+	state := []byte{0, 0, 0}
+	if game.Turn == XPlayer {
+		state[0] |= 1
+	}
+	if game.Winner != NoPlayer {
+		if game.Winner == OPlayer {
+			state[0] |= 2
+		} else if game.Winner == XPlayer {
+			state[0] |= 4
+		}
+	}
+	if game.Draw {
+		state[0] |= 6
+	}
+	cells := game.Board.Cells
+	offset := 3
 
 	for x := 0; x < len(cells); x++ {
 		for y := 0; y < len(cells[x]); y++ {
 			cell := cells[x][y]
-            idx := offset + (x*3 + y)*2
-            b := offset / 8
-            s := idx % 8
+			idx := offset + (x*3+y)*2
+			b := offset / 8
+			s := idx % 8
 			if cell == O {
-                o := byte(1 << s)
+				o := byte(1 << s)
 				state[b] |= o
 			} else if cell == X {
-                x := byte(2 << s)
+				x := byte(2 << s)
 				state[b] |= x
 			}
 		}

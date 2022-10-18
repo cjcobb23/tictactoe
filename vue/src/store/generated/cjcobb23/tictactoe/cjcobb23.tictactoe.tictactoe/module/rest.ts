@@ -72,6 +72,17 @@ export interface TictactoeQueryParamsResponse {
   params?: TictactoeParams;
 }
 
+export interface TictactoeQueryStoredGameHumanResponse {
+  /** @format uint64 */
+  gameIndex?: string;
+  board?: string;
+  turn?: string;
+  winner?: string;
+  draw?: boolean;
+  x?: string;
+  o?: string;
+}
+
 export interface TictactoeStoredGame {
   /** @format uint64 */
   index?: string;
@@ -413,6 +424,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryStoredGame = (index: string, params: RequestParams = {}) =>
     this.request<TictactoeQueryGetStoredGameResponse, RpcStatus>({
       path: `/cjcobb23/tictactoe/tictactoe/stored_game/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryStoredGameHuman
+   * @summary Queries a list of StoredGameHuman items.
+   * @request GET:/cjcobb23/tictactoe/tictactoe/stored_game_human/{gameIndex}
+   */
+  queryStoredGameHuman = (gameIndex: string, params: RequestParams = {}) =>
+    this.request<TictactoeQueryStoredGameHumanResponse, RpcStatus>({
+      path: `/cjcobb23/tictactoe/tictactoe/stored_game_human/${gameIndex}`,
       method: "GET",
       format: "json",
       ...params,

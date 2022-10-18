@@ -270,6 +270,57 @@ paths:
           format: uint64
       tags:
         - Query
+  '/cjcobb23/tictactoe/tictactoe/stored_game_human/{gameIndex}':
+    get:
+      summary: Queries a list of StoredGameHuman items.
+      operationId: Cjcobb23TictactoeTictactoeStoredGameHuman
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              gameIndex:
+                type: string
+                format: uint64
+              board:
+                type: string
+              turn:
+                type: string
+              winner:
+                type: string
+              draw:
+                type: boolean
+              x:
+                type: string
+              o:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: gameIndex
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
   /cjcobb23/tictactoe/tictactoe/system_info:
     get:
       summary: Queries a SystemInfo by index.
@@ -30832,6 +30883,24 @@ definitions:
         type: object
         description: Params defines the parameters for the module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  cjcobb23.tictactoe.tictactoe.QueryStoredGameHumanResponse:
+    type: object
+    properties:
+      gameIndex:
+        type: string
+        format: uint64
+      board:
+        type: string
+      turn:
+        type: string
+      winner:
+        type: string
+      draw:
+        type: boolean
+      x:
+        type: string
+      o:
+        type: string
   cjcobb23.tictactoe.tictactoe.StoredGame:
     type: object
     properties:
