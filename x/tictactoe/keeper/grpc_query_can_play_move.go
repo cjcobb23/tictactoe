@@ -19,7 +19,7 @@ func (k Keeper) CanPlayMove(goCtx context.Context, req *types.QueryCanPlayMoveRe
 
 	storedGame, found := k.GetStoredGame(ctx, req.GameIndex)
 	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", req.GameIndex)
+		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%x", req.GameIndex)
 	}
 	if storedGame.State == "" {
 		return &types.QueryCanPlayMoveResponse{

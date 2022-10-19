@@ -12,7 +12,7 @@ var (
 	ErrInvalidO            = sdkerrors.Register(ModuleName, 1101, "O address is invalid: %s")
 	ErrGameNotParseable    = sdkerrors.Register(ModuleName, 1102, "game cannot be parsed")
 	ErrGameNotFound        = sdkerrors.Register(ModuleName, 1103, "game not found")
-	ErrInvalidMove         = sdkerrors.Register(ModuleName, 1104, "move is invalid: %s")
+	ErrInvalidMove         = sdkerrors.Register(ModuleName, 1104, "move is invalid")
 	ErrNotPlayerTurn       = sdkerrors.Register(ModuleName, 1105, "player attempting to play out of turn")
 	ErrCreatorNotPlayer    = sdkerrors.Register(ModuleName, 1106, "message creator is not player")
 	ErrGameNotAccepted     = sdkerrors.Register(ModuleName, 1107, "game has not been accepted")

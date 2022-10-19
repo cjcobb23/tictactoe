@@ -16,10 +16,10 @@ func (k msgServer) Accept(goCtx context.Context, msg *types.MsgAccept) (*types.M
 
 	storedGame, found := k.Keeper.GetStoredGame(ctx, msg.GameIndex)
 	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", msg.GameIndex)
+		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%x", msg.GameIndex)
 	}
 	if storedGame.State != "" {
-		return nil, sdkerrors.Wrapf(types.ErrGameAlreadyAccepted, "%s", msg.GameIndex)
+		return nil, sdkerrors.Wrapf(types.ErrGameAlreadyAccepted, "%x", msg.GameIndex)
 	}
 	newGame := &rules.Game{}
 	storedGame.State = newGame.String()

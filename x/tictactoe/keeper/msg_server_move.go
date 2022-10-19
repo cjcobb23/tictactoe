@@ -17,11 +17,11 @@ func (k msgServer) Move(goCtx context.Context, msg *types.MsgMove) (*types.MsgMo
 	ctx.GasMeter().ConsumeGas(types.MoveGas, "Play a move")
 	storedGame, found := k.Keeper.GetStoredGame(ctx, msg.GameIndex)
 	if !found {
-		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%s", msg.GameIndex)
+		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%x", msg.GameIndex)
 	}
 
 	if storedGame.State == "" {
-		return nil, sdkerrors.Wrapf(types.ErrGameNotAccepted, "%s", msg.GameIndex)
+		return nil, sdkerrors.Wrapf(types.ErrGameNotAccepted, "%x", msg.GameIndex)
 	}
 	game, err := storedGame.Move(msg.Creator, msg.X, msg.Y)
 	if err != nil {

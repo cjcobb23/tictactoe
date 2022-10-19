@@ -24,7 +24,7 @@ func (storedGame StoredGame) ParseGame() (game *rules.Game, err error) {
 	return board, nil
 }
 
-func (storedGame StoredGame) Move(player string, x uint64, y uint64) (game *rules.Game,err error) {
+func (storedGame *StoredGame) Move(player string, x uint64, y uint64) (game *rules.Game,err error) {
 
 	game, err = storedGame.ParseGame()
 	if err != nil {
@@ -36,12 +36,12 @@ func (storedGame StoredGame) Move(player string, x uint64, y uint64) (game *rule
     p := rules.NoPlayer
 	if player == storedGame.O {
 		if game.Turn != rules.OPlayer {
-			return game,sdkerrors.Wrapf(ErrNotPlayerTurn, "%s", player)
+			return game,ErrNotPlayerTurn
 		}
         p = rules.OPlayer
 	} else if player == storedGame.X {
 		if game.Turn != rules.XPlayer {
-			return game,sdkerrors.Wrapf(ErrNotPlayerTurn, "%s", player)
+			return game,ErrNotPlayerTurn
 		}
         p = rules.XPlayer
 	} else {

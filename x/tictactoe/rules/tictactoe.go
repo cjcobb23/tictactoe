@@ -40,14 +40,13 @@ func GetPlayerCell(player Player) CellState {
 
 func (game *Game) Move(player Player, x uint64, y uint64) error {
 
-	cells := game.Board.Cells
+    cells := game.Board.Cells[:]
 	if x >= uint64(len(cells)) {
 		return errors.New("x out of range")
 	}
 	if y >= uint64(len(cells[x])) {
 		return errors.New("y out of range")
 	}
-
 	if cells[x][y] != Empty {
 		return errors.New("cell not empty")
 	}
@@ -135,7 +134,7 @@ func Parse(s string) (*Game, error) {
 	} else {
 		game.Turn = OPlayer
 	}
-	if state[0]&6 != 0 {
+    if state[0]&6 == 6 {
 		game.Draw = true
 	} else if state[0]&2 != 0 {
 		game.Winner = OPlayer
@@ -143,19 +142,20 @@ func Parse(s string) (*Game, error) {
 		game.Winner = XPlayer
 	} else {
 		game.Winner = NoPlayer
+        game.Draw = false
 	}
-	cells := game.Board.Cells
+    cells := game.Board.Cells[:]
 	offset := 3
 	for x := 0; x < len(cells); x++ {
 		for y := 0; y < len(cells[x]); y++ {
 			idx := offset + (x*3+y)*2
-			b := offset / 8
+			b := idx / 8
 			s := idx % 8
-			o := byte(1 << s)
-			x := byte(2 << s)
-			if state[b]&o != 0 {
+			o_bit := byte(1 << s)
+			x_bit := byte(2 << s)
+			if state[b]&o_bit != 0 {
 				cells[x][y] = O
-			} else if state[b]&x != 0 {
+			} else if state[b]&x_bit != 0 {
 				cells[x][y] = X
 			} else {
 				cells[x][y] = Empty
@@ -205,14 +205,14 @@ func (game *Game) String() string {
 		for y := 0; y < len(cells[x]); y++ {
 			cell := cells[x][y]
 			idx := offset + (x*3+y)*2
-			b := offset / 8
+			b := idx / 8
 			s := idx % 8
 			if cell == O {
-				o := byte(1 << s)
-				state[b] |= o
+				o_bit := byte(1 << s)
+				state[b] |= o_bit
 			} else if cell == X {
-				x := byte(2 << s)
-				state[b] |= x
+				x_bit := byte(2 << s)
+				state[b] |= x_bit
 			}
 		}
 	}
