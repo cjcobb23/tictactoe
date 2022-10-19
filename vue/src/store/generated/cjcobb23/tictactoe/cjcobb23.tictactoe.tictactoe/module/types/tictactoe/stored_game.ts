@@ -9,9 +9,20 @@ export interface StoredGame {
   state: string;
   x: string;
   o: string;
+  prevIndex: number;
+  nextIndex: number;
+  blockHeightExpiration: number;
 }
 
-const baseStoredGame: object = { index: 0, state: "", x: "", o: "" };
+const baseStoredGame: object = {
+  index: 0,
+  state: "",
+  x: "",
+  o: "",
+  prevIndex: 0,
+  nextIndex: 0,
+  blockHeightExpiration: 0,
+};
 
 export const StoredGame = {
   encode(message: StoredGame, writer: Writer = Writer.create()): Writer {
@@ -26,6 +37,15 @@ export const StoredGame = {
     }
     if (message.o !== "") {
       writer.uint32(34).string(message.o);
+    }
+    if (message.prevIndex !== 0) {
+      writer.uint32(40).uint64(message.prevIndex);
+    }
+    if (message.nextIndex !== 0) {
+      writer.uint32(48).uint64(message.nextIndex);
+    }
+    if (message.blockHeightExpiration !== 0) {
+      writer.uint32(56).uint64(message.blockHeightExpiration);
     }
     return writer;
   },
@@ -48,6 +68,15 @@ export const StoredGame = {
           break;
         case 4:
           message.o = reader.string();
+          break;
+        case 5:
+          message.prevIndex = longToNumber(reader.uint64() as Long);
+          break;
+        case 6:
+          message.nextIndex = longToNumber(reader.uint64() as Long);
+          break;
+        case 7:
+          message.blockHeightExpiration = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -79,6 +108,24 @@ export const StoredGame = {
     } else {
       message.o = "";
     }
+    if (object.prevIndex !== undefined && object.prevIndex !== null) {
+      message.prevIndex = Number(object.prevIndex);
+    } else {
+      message.prevIndex = 0;
+    }
+    if (object.nextIndex !== undefined && object.nextIndex !== null) {
+      message.nextIndex = Number(object.nextIndex);
+    } else {
+      message.nextIndex = 0;
+    }
+    if (
+      object.blockHeightExpiration !== undefined &&
+      object.blockHeightExpiration !== null
+    ) {
+      message.blockHeightExpiration = Number(object.blockHeightExpiration);
+    } else {
+      message.blockHeightExpiration = 0;
+    }
     return message;
   },
 
@@ -88,6 +135,10 @@ export const StoredGame = {
     message.state !== undefined && (obj.state = message.state);
     message.x !== undefined && (obj.x = message.x);
     message.o !== undefined && (obj.o = message.o);
+    message.prevIndex !== undefined && (obj.prevIndex = message.prevIndex);
+    message.nextIndex !== undefined && (obj.nextIndex = message.nextIndex);
+    message.blockHeightExpiration !== undefined &&
+      (obj.blockHeightExpiration = message.blockHeightExpiration);
     return obj;
   },
 
@@ -112,6 +163,24 @@ export const StoredGame = {
       message.o = object.o;
     } else {
       message.o = "";
+    }
+    if (object.prevIndex !== undefined && object.prevIndex !== null) {
+      message.prevIndex = object.prevIndex;
+    } else {
+      message.prevIndex = 0;
+    }
+    if (object.nextIndex !== undefined && object.nextIndex !== null) {
+      message.nextIndex = object.nextIndex;
+    } else {
+      message.nextIndex = 0;
+    }
+    if (
+      object.blockHeightExpiration !== undefined &&
+      object.blockHeightExpiration !== null
+    ) {
+      message.blockHeightExpiration = object.blockHeightExpiration;
+    } else {
+      message.blockHeightExpiration = 0;
     }
     return message;
   },

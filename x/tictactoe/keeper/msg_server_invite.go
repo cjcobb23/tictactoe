@@ -28,18 +28,23 @@ func (k msgServer) Invite(goCtx context.Context, msg *types.MsgInvite) (*types.M
 		x = msg.Opponent
 		o = msg.Creator
 	}
-	// Don't init board until game is accepted
+	// Don't init state until game is accepted
+    // GameList indexes will be updated in AppendToGameList
 	storedGame := types.StoredGame{
 		Index: newIndex,
 		State: "",
 		X:     x,
 		O:     o,
+        PrevIndex: types.NoGameListIndex,
+        NextIndex: types.NoGameListIndex,
+        BlockHeightExpiration: uint64(ctx.BlockHeight() + types.MaxBlocksInactive),
 	}
 	err := storedGame.Validate()
 	if err != nil {
 		return nil, err
 	}
 
+    k.Keeper.AppendToGameList(ctx,&storedGame,&systemInfo)
 	k.Keeper.SetStoredGame(ctx, storedGame)
 	systemInfo.NextId++
 	k.Keeper.SetSystemInfo(ctx, systemInfo)

@@ -91,11 +91,26 @@ export interface TictactoeStoredGame {
   state?: string;
   x?: string;
   o?: string;
+
+  /** @format uint64 */
+  prevIndex?: string;
+
+  /** @format uint64 */
+  nextIndex?: string;
+
+  /** @format uint64 */
+  blockHeightExpiration?: string;
 }
 
 export interface TictactoeSystemInfo {
   /** @format uint64 */
   nextId?: string;
+
+  /** @format uint64 */
+  gameListHead?: string;
+
+  /** @format uint64 */
+  gameListTail?: string;
 }
 
 /**

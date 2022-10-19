@@ -6,14 +6,22 @@ export const protobufPackage = "cjcobb23.tictactoe.tictactoe";
 
 export interface SystemInfo {
   nextId: number;
+  gameListHead: number;
+  gameListTail: number;
 }
 
-const baseSystemInfo: object = { nextId: 0 };
+const baseSystemInfo: object = { nextId: 0, gameListHead: 0, gameListTail: 0 };
 
 export const SystemInfo = {
   encode(message: SystemInfo, writer: Writer = Writer.create()): Writer {
     if (message.nextId !== 0) {
       writer.uint32(8).uint64(message.nextId);
+    }
+    if (message.gameListHead !== 0) {
+      writer.uint32(16).uint64(message.gameListHead);
+    }
+    if (message.gameListTail !== 0) {
+      writer.uint32(24).uint64(message.gameListTail);
     }
     return writer;
   },
@@ -27,6 +35,12 @@ export const SystemInfo = {
       switch (tag >>> 3) {
         case 1:
           message.nextId = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.gameListHead = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.gameListTail = longToNumber(reader.uint64() as Long);
           break;
         default:
           reader.skipType(tag & 7);
@@ -43,12 +57,26 @@ export const SystemInfo = {
     } else {
       message.nextId = 0;
     }
+    if (object.gameListHead !== undefined && object.gameListHead !== null) {
+      message.gameListHead = Number(object.gameListHead);
+    } else {
+      message.gameListHead = 0;
+    }
+    if (object.gameListTail !== undefined && object.gameListTail !== null) {
+      message.gameListTail = Number(object.gameListTail);
+    } else {
+      message.gameListTail = 0;
+    }
     return message;
   },
 
   toJSON(message: SystemInfo): unknown {
     const obj: any = {};
     message.nextId !== undefined && (obj.nextId = message.nextId);
+    message.gameListHead !== undefined &&
+      (obj.gameListHead = message.gameListHead);
+    message.gameListTail !== undefined &&
+      (obj.gameListTail = message.gameListTail);
     return obj;
   },
 
@@ -58,6 +86,16 @@ export const SystemInfo = {
       message.nextId = object.nextId;
     } else {
       message.nextId = 0;
+    }
+    if (object.gameListHead !== undefined && object.gameListHead !== null) {
+      message.gameListHead = object.gameListHead;
+    } else {
+      message.gameListHead = 0;
+    }
+    if (object.gameListTail !== undefined && object.gameListTail !== null) {
+      message.gameListTail = object.gameListTail;
+    } else {
+      message.gameListTail = 0;
     }
     return message;
   },
