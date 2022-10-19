@@ -11,6 +11,8 @@ export interface MsgInvite {
 
 export interface MsgInviteResponse {
   gameIndex: number;
+  x: string;
+  o: string;
 }
 
 export interface MsgAccept {
@@ -103,12 +105,18 @@ export const MsgInvite = {
   },
 };
 
-const baseMsgInviteResponse: object = { gameIndex: 0 };
+const baseMsgInviteResponse: object = { gameIndex: 0, x: "", o: "" };
 
 export const MsgInviteResponse = {
   encode(message: MsgInviteResponse, writer: Writer = Writer.create()): Writer {
     if (message.gameIndex !== 0) {
       writer.uint32(8).uint64(message.gameIndex);
+    }
+    if (message.x !== "") {
+      writer.uint32(18).string(message.x);
+    }
+    if (message.o !== "") {
+      writer.uint32(26).string(message.o);
     }
     return writer;
   },
@@ -122,6 +130,12 @@ export const MsgInviteResponse = {
       switch (tag >>> 3) {
         case 1:
           message.gameIndex = longToNumber(reader.uint64() as Long);
+          break;
+        case 2:
+          message.x = reader.string();
+          break;
+        case 3:
+          message.o = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -138,12 +152,24 @@ export const MsgInviteResponse = {
     } else {
       message.gameIndex = 0;
     }
+    if (object.x !== undefined && object.x !== null) {
+      message.x = String(object.x);
+    } else {
+      message.x = "";
+    }
+    if (object.o !== undefined && object.o !== null) {
+      message.o = String(object.o);
+    } else {
+      message.o = "";
+    }
     return message;
   },
 
   toJSON(message: MsgInviteResponse): unknown {
     const obj: any = {};
     message.gameIndex !== undefined && (obj.gameIndex = message.gameIndex);
+    message.x !== undefined && (obj.x = message.x);
+    message.o !== undefined && (obj.o = message.o);
     return obj;
   },
 
@@ -153,6 +179,16 @@ export const MsgInviteResponse = {
       message.gameIndex = object.gameIndex;
     } else {
       message.gameIndex = 0;
+    }
+    if (object.x !== undefined && object.x !== null) {
+      message.x = object.x;
+    } else {
+      message.x = "";
+    }
+    if (object.o !== undefined && object.o !== null) {
+      message.o = object.o;
+    } else {
+      message.o = "";
     }
     return message;
   },

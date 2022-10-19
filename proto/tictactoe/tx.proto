@@ -20,6 +20,8 @@ message MsgInvite {
 
 message MsgInviteResponse {
   uint64 gameIndex = 1;
+  string x = 2;
+  string o = 3;
 }
 
 message MsgAccept {

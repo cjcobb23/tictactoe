@@ -50,5 +50,5 @@ func (k msgServer) Invite(goCtx context.Context, msg *types.MsgInvite) (*types.M
 			sdk.NewAttribute(types.GameCreatedEventGameIndex, strconv.FormatUint(newIndex, 10)),
 			sdk.NewAttribute(types.GameCreatedEventXPlayer, storedGame.X),
 			sdk.NewAttribute(types.GameCreatedEventOPlayer, storedGame.O)))
-	return &types.MsgInviteResponse{GameIndex: newIndex}, err
+        return &types.MsgInviteResponse{GameIndex: newIndex,X:x,O:o}, err
 }

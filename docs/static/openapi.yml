@@ -30795,6 +30795,10 @@ definitions:
       gameIndex:
         type: string
         format: uint64
+      x:
+        type: string
+      o:
+        type: string
   cjcobb23.tictactoe.tictactoe.MsgMoveResponse:
     type: object
     properties:

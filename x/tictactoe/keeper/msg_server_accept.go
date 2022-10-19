@@ -21,8 +21,7 @@ func (k msgServer) Accept(goCtx context.Context, msg *types.MsgAccept) (*types.M
 	if storedGame.State != "" {
 		return nil, sdkerrors.Wrapf(types.ErrGameAlreadyAccepted, "%x", msg.GameIndex)
 	}
-	newGame := &rules.Game{}
-	storedGame.State = newGame.String()
+	storedGame.State = rules.NewGame().String()
 	k.Keeper.SetStoredGame(ctx, storedGame)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(types.InviteAcceptedEventType,

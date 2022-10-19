@@ -25,6 +25,8 @@ export type TictactoeMsgAcceptResponse = object;
 export interface TictactoeMsgInviteResponse {
   /** @format uint64 */
   gameIndex?: string;
+  x?: string;
+  o?: string;
 }
 
 export interface TictactoeMsgMoveResponse {

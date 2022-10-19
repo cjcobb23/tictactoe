@@ -22,6 +22,8 @@ func TestInvite(t *testing.T) {
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 1,
+        X:alice,
+        O:bob,
     }, *createResponse)
     createResponse, err = msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
@@ -30,6 +32,8 @@ func TestInvite(t *testing.T) {
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 2,
+        X:alice,
+        O:bob,
     }, *createResponse)
     createResponse, err = msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
@@ -38,6 +42,8 @@ func TestInvite(t *testing.T) {
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 3,
+        X:alice,
+        O:carol,
     }, *createResponse)
     createResponse, err = msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
@@ -57,6 +63,8 @@ func TestAccept(t *testing.T) {
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 1,
+        X:alice,
+        O:bob,
     }, *createResponse)
 
     _, err = msgServer.Accept(context, &types.MsgAccept{
@@ -85,6 +93,8 @@ func TestMove(t *testing.T) {
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 1,
+        X:alice,
+        O:bob,
     }, *createResponse)
 
     _, err = msgServer.Accept(context, &types.MsgAccept{
@@ -93,15 +103,9 @@ func TestMove(t *testing.T) {
     })
     require.Nil(t,err)
     _, err = msgServer.Move(context, &types.MsgMove{
-        Creator: bob,
-        GameIndex: 1,
-        X: 0,
-        Y: 0,
-    })
-    _, err = msgServer.Move(context, &types.MsgMove{
         Creator: alice,
         GameIndex: 1,
-        X: 1,
+        X: 0,
         Y: 0,
     })
     require.Nil(t,err)
@@ -119,12 +123,20 @@ func TestMove(t *testing.T) {
         Y: 1,
     })
     require.Nil(t,err)
-    moveResponse, err := msgServer.Move(context, &types.MsgMove{
+    _, err = msgServer.Move(context, &types.MsgMove{
         Creator: bob,
         GameIndex: 1,
         X: 0,
         Y: 2,
     })
+    require.Nil(t,err)
+    moveResponse, err := msgServer.Move(context, &types.MsgMove{
+        Creator: alice,
+        GameIndex: 1,
+        X: 2,
+        Y: 2,
+    })
+    require.Nil(t,err)
     require.EqualValues(t, types.MsgMoveResponse{
         Winner: "X",
     }, *moveResponse)
