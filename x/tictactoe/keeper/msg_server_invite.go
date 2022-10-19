@@ -28,8 +28,12 @@ func (k msgServer) Invite(goCtx context.Context, msg *types.MsgInvite) (*types.M
 		State: "",
 		X:     msg.Creator,
 		O:     "",
-	}
+        PrevIndex: types.NoGameListIndex,
+        NextIndex: types.NoGameListIndex,
+        BlockHeightExpiration: uint64(ctx.BlockHeight() + types.MaxBlocksInactive),
+    }
 
+    k.Keeper.AppendToGameList(ctx,&storedGame,&systemInfo)
 	k.Keeper.SetStoredGame(ctx, storedGame)
 	systemInfo.NextId++
 	k.Keeper.SetSystemInfo(ctx, systemInfo)

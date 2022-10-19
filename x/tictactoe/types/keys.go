@@ -26,6 +26,15 @@ const (
 )
 
 const (
+    NoGameListIndex = 0
+)
+
+const (
+    MaxBlocksInactive = 100000 // ~ 1 week
+    FinishedGameBlockExpiry = 500 // ~ 1 hour
+)
+
+const (
 	InviteGas = 10000
 	AcceptGas = 5000
 	MoveGas   = 1000
@@ -53,4 +62,9 @@ const (
 	MovePlayedEventCreator   = "creator"
 	MovePlayedEventGameIndex = "game-index"
 	MovePlayedEventWinner    = "winner"
+)
+
+const (
+    GameExpiredEventType = "game-expired"
+    GameExpiredEventGameIndex = "game-index"
 )

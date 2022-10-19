@@ -8,6 +8,9 @@ message StoredGame {
   string state = 2; 
   string x = 3; 
   string o = 4; 
-  
+
+  uint64 prevIndex = 5;
+  uint64 nextIndex = 6;
+  uint64 blockHeightExpiration = 7;
 }
 

@@ -15,6 +15,10 @@ func (k msgServer) Move(goCtx context.Context, msg *types.MsgMove) (*types.MsgMo
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	ctx.GasMeter().ConsumeGas(types.MoveGas, "Play a move")
+    systemInfo, found := k.GetSystemInfo(ctx)
+    if !found {
+        panic("SystemInfo not found")
+    }
 	storedGame, found := k.Keeper.GetStoredGame(ctx, msg.GameIndex)
 	if !found {
 		return nil, sdkerrors.Wrapf(types.ErrGameNotFound, "%x", msg.GameIndex)
@@ -27,7 +31,14 @@ func (k msgServer) Move(goCtx context.Context, msg *types.MsgMove) (*types.MsgMo
 	if err != nil {
 		return nil, err
 	}
+    if game.Winner == rules.NoPlayer && !game.Draw {
+        storedGame.BlockHeightExpiration = uint64(ctx.BlockHeight() + types.MaxBlocksInactive)
+    } else {
+        storedGame.BlockHeightExpiration = uint64(ctx.BlockHeight() + types.FinishedGameBlockExpiry)
+    }
+    k.Keeper.AppendToGameList(ctx, &storedGame, &systemInfo)
 	k.Keeper.SetStoredGame(ctx, storedGame)
+    k.Keeper.SetSystemInfo(ctx, systemInfo)
 	winner := ""
 	if game.Winner == rules.XPlayer {
 		winner = "X"

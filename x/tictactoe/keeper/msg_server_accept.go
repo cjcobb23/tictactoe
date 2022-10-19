@@ -37,7 +37,14 @@ func (k msgServer) Accept(goCtx context.Context, msg *types.MsgAccept) (*types.M
 		return nil, err
 	}
 
+    storedGame.BlockHeightExpiration = uint64(ctx.BlockHeight() + types.MaxBlocksInactive)
+	systemInfo, found := k.Keeper.GetSystemInfo(ctx)
+	if !found {
+		panic("SystemInfo not found")
+	}
+    k.Keeper.AppendToGameList(ctx, &storedGame, &systemInfo)
 	k.Keeper.SetStoredGame(ctx, storedGame)
+    k.Keeper.SetSystemInfo(ctx, systemInfo)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(types.InviteAcceptedEventType,
 			sdk.NewAttribute(types.InviteAcceptedEventCreator, msg.Creator),
