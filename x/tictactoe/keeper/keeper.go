@@ -8,6 +8,7 @@ import (
 	"github.com/cjcobb23/tictactoe/x/tictactoe/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
@@ -17,6 +18,7 @@ type (
 		storeKey   sdk.StoreKey
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
+        AccountKeeper authkeeper.AccountKeeper
 	}
 )
 
@@ -25,6 +27,7 @@ func NewKeeper(
 	storeKey,
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
+    ak authkeeper.AccountKeeper,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
@@ -38,6 +41,7 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
+        AccountKeeper: ak,
 	}
 }
 

@@ -23,16 +23,27 @@ func (k msgServer) Accept(goCtx context.Context, msg *types.MsgAccept) (*types.M
 	if storedGame.State != "" {
 		return nil, sdkerrors.Wrapf(types.ErrGameAlreadyAccepted, "%x", msg.GameIndex)
 	}
-	o := msg.Creator
-	x := storedGame.X
-    s := x + o
-    hash := sha256.Sum256([]byte(s))
+	o, err := sdk.AccAddressFromBech32(msg.Creator)
+    if err != nil {
+        panic("Can't decode account from message creator")
+    }
+	x, err := sdk.AccAddressFromBech32(storedGame.X)
+    if err != nil {
+        panic("Can't decode account from stored game creator")
+    }
+    oAcc := k.Keeper.AccountKeeper.GetAccount(ctx,o)
+    xAcc := k.Keeper.AccountKeeper.GetAccount(ctx,x)
+    b := append(oAcc.GetPubKey().Bytes(), xAcc.GetPubKey().Bytes()...)
+    hash := sha256.Sum256(b)
 	if (hash[0] >> 7) == 0 {
-		x = o
-		o = msg.Creator
-	}
+		storedGame.O = storedGame.X
+		storedGame.X = msg.Creator
+	} else {
+        storedGame.O = msg.Creator
+        // storedGame.X already holds the games creator
+    }
 	storedGame.State = rules.NewGame().String()
-	err := storedGame.Validate()
+	err = storedGame.Validate()
 	if err != nil {
 		return nil, err
 	}

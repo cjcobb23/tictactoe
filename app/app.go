@@ -394,7 +394,7 @@ func New(
 		keys[tictactoemoduletypes.StoreKey],
 		keys[tictactoemoduletypes.MemStoreKey],
 		app.GetSubspace(tictactoemoduletypes.ModuleName),
-	)
+        app.AccountKeeper)
 	tictactoeModule := tictactoemodule.NewAppModule(appCodec, app.TictactoeKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
