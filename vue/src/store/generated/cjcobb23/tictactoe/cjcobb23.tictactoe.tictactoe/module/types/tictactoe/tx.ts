@@ -6,13 +6,10 @@ export const protobufPackage = "cjcobb23.tictactoe.tictactoe";
 
 export interface MsgInvite {
   creator: string;
-  opponent: string;
 }
 
 export interface MsgInviteResponse {
   gameIndex: number;
-  x: string;
-  o: string;
 }
 
 export interface MsgAccept {
@@ -20,7 +17,10 @@ export interface MsgAccept {
   gameIndex: number;
 }
 
-export interface MsgAcceptResponse {}
+export interface MsgAcceptResponse {
+  x: string;
+  o: string;
+}
 
 export interface MsgMove {
   creator: string;
@@ -33,15 +33,12 @@ export interface MsgMoveResponse {
   winner: string;
 }
 
-const baseMsgInvite: object = { creator: "", opponent: "" };
+const baseMsgInvite: object = { creator: "" };
 
 export const MsgInvite = {
   encode(message: MsgInvite, writer: Writer = Writer.create()): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
-    }
-    if (message.opponent !== "") {
-      writer.uint32(18).string(message.opponent);
     }
     return writer;
   },
@@ -55,9 +52,6 @@ export const MsgInvite = {
       switch (tag >>> 3) {
         case 1:
           message.creator = reader.string();
-          break;
-        case 2:
-          message.opponent = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -74,18 +68,12 @@ export const MsgInvite = {
     } else {
       message.creator = "";
     }
-    if (object.opponent !== undefined && object.opponent !== null) {
-      message.opponent = String(object.opponent);
-    } else {
-      message.opponent = "";
-    }
     return message;
   },
 
   toJSON(message: MsgInvite): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.opponent !== undefined && (obj.opponent = message.opponent);
     return obj;
   },
 
@@ -96,27 +84,16 @@ export const MsgInvite = {
     } else {
       message.creator = "";
     }
-    if (object.opponent !== undefined && object.opponent !== null) {
-      message.opponent = object.opponent;
-    } else {
-      message.opponent = "";
-    }
     return message;
   },
 };
 
-const baseMsgInviteResponse: object = { gameIndex: 0, x: "", o: "" };
+const baseMsgInviteResponse: object = { gameIndex: 0 };
 
 export const MsgInviteResponse = {
   encode(message: MsgInviteResponse, writer: Writer = Writer.create()): Writer {
     if (message.gameIndex !== 0) {
       writer.uint32(8).uint64(message.gameIndex);
-    }
-    if (message.x !== "") {
-      writer.uint32(18).string(message.x);
-    }
-    if (message.o !== "") {
-      writer.uint32(26).string(message.o);
     }
     return writer;
   },
@@ -130,12 +107,6 @@ export const MsgInviteResponse = {
       switch (tag >>> 3) {
         case 1:
           message.gameIndex = longToNumber(reader.uint64() as Long);
-          break;
-        case 2:
-          message.x = reader.string();
-          break;
-        case 3:
-          message.o = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -152,24 +123,12 @@ export const MsgInviteResponse = {
     } else {
       message.gameIndex = 0;
     }
-    if (object.x !== undefined && object.x !== null) {
-      message.x = String(object.x);
-    } else {
-      message.x = "";
-    }
-    if (object.o !== undefined && object.o !== null) {
-      message.o = String(object.o);
-    } else {
-      message.o = "";
-    }
     return message;
   },
 
   toJSON(message: MsgInviteResponse): unknown {
     const obj: any = {};
     message.gameIndex !== undefined && (obj.gameIndex = message.gameIndex);
-    message.x !== undefined && (obj.x = message.x);
-    message.o !== undefined && (obj.o = message.o);
     return obj;
   },
 
@@ -179,16 +138,6 @@ export const MsgInviteResponse = {
       message.gameIndex = object.gameIndex;
     } else {
       message.gameIndex = 0;
-    }
-    if (object.x !== undefined && object.x !== null) {
-      message.x = object.x;
-    } else {
-      message.x = "";
-    }
-    if (object.o !== undefined && object.o !== null) {
-      message.o = object.o;
-    } else {
-      message.o = "";
     }
     return message;
   },
@@ -266,10 +215,16 @@ export const MsgAccept = {
   },
 };
 
-const baseMsgAcceptResponse: object = {};
+const baseMsgAcceptResponse: object = { x: "", o: "" };
 
 export const MsgAcceptResponse = {
-  encode(_: MsgAcceptResponse, writer: Writer = Writer.create()): Writer {
+  encode(message: MsgAcceptResponse, writer: Writer = Writer.create()): Writer {
+    if (message.x !== "") {
+      writer.uint32(10).string(message.x);
+    }
+    if (message.o !== "") {
+      writer.uint32(18).string(message.o);
+    }
     return writer;
   },
 
@@ -280,6 +235,12 @@ export const MsgAcceptResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.x = reader.string();
+          break;
+        case 2:
+          message.o = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -288,18 +249,40 @@ export const MsgAcceptResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgAcceptResponse {
+  fromJSON(object: any): MsgAcceptResponse {
     const message = { ...baseMsgAcceptResponse } as MsgAcceptResponse;
+    if (object.x !== undefined && object.x !== null) {
+      message.x = String(object.x);
+    } else {
+      message.x = "";
+    }
+    if (object.o !== undefined && object.o !== null) {
+      message.o = String(object.o);
+    } else {
+      message.o = "";
+    }
     return message;
   },
 
-  toJSON(_: MsgAcceptResponse): unknown {
+  toJSON(message: MsgAcceptResponse): unknown {
     const obj: any = {};
+    message.x !== undefined && (obj.x = message.x);
+    message.o !== undefined && (obj.o = message.o);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgAcceptResponse>): MsgAcceptResponse {
+  fromPartial(object: DeepPartial<MsgAcceptResponse>): MsgAcceptResponse {
     const message = { ...baseMsgAcceptResponse } as MsgAcceptResponse;
+    if (object.x !== undefined && object.x !== null) {
+      message.x = object.x;
+    } else {
+      message.x = "";
+    }
+    if (object.o !== undefined && object.o !== null) {
+      message.o = object.o;
+    } else {
+      message.o = "";
+    }
     return message;
   },
 };

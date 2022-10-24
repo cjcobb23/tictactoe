@@ -20,13 +20,14 @@ export interface RpcStatus {
   details?: ProtobufAny[];
 }
 
-export type TictactoeMsgAcceptResponse = object;
+export interface TictactoeMsgAcceptResponse {
+  x?: string;
+  o?: string;
+}
 
 export interface TictactoeMsgInviteResponse {
   /** @format uint64 */
   gameIndex?: string;
-  x?: string;
-  o?: string;
 }
 
 export interface TictactoeMsgMoveResponse {

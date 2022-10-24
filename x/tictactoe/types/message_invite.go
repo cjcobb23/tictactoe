@@ -12,7 +12,6 @@ var _ sdk.Msg = &MsgInvite{}
 func NewMsgInvite(creator string, opponent string) *MsgInvite {
 	return &MsgInvite{
 		Creator:  creator,
-		Opponent: opponent,
 	}
 }
 
