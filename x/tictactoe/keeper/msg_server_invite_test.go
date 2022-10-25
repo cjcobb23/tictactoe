@@ -4,7 +4,9 @@ import (
     "testing"
 
     "github.com/cjcobb23/tictactoe/x/tictactoe/types"
+    
     "github.com/stretchr/testify/require"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
@@ -13,58 +15,46 @@ const (
     carol = "cosmos1e0w5t53nrq7p66fye6c8p0ynyhf6y24l4yuxd7"
 )
 
+
 func TestInvite(t *testing.T) {
-    msgServer, context := setupMsgServer(t)
+    msgServer, _, context := setupMsgServer(t)
     createResponse, err := msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
-        Opponent:   bob,
     })
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 1,
-        X:alice,
-        O:bob,
     }, *createResponse)
     createResponse, err = msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
-        Opponent:   bob,
     })
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 2,
-        X:alice,
-        O:bob,
     }, *createResponse)
     createResponse, err = msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
-        Opponent:   carol,
     })
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 3,
-        X:alice,
-        O:carol,
     }, *createResponse)
-    createResponse, err = msgServer.Invite(context, &types.MsgInvite{
-        Creator: alice,
-        Opponent:   "foobar",
-    })
-
-    require.EqualError(t,err,"O address is invalid: foobar: decoding bech32 failed: invalid bech32 string length 6")
-
 }
 
 func TestAccept(t *testing.T) {
-    msgServer, context := setupMsgServer(t)
+    msgServer, keeper, context := setupMsgServer(t)
+	acc, _ := sdk.AccAddressFromBech32(alice)
+    newAcc := keeper.AccountKeeper.NewAccountWithAddress(sdk.UnwrapSDKContext(context),acc)
+    keeper.AccountKeeper.SetAccount(sdk.UnwrapSDKContext(context),newAcc)
+	acc, _ = sdk.AccAddressFromBech32(bob)
+    newAcc = keeper.AccountKeeper.NewAccountWithAddress(sdk.UnwrapSDKContext(context),acc)
+    keeper.AccountKeeper.SetAccount(sdk.UnwrapSDKContext(context),newAcc)
     createResponse, err := msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
-        Opponent:   bob,
     })
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 1,
-        X:alice,
-        O:bob,
     }, *createResponse)
 
     _, err = msgServer.Accept(context, &types.MsgAccept{
@@ -85,16 +75,17 @@ func TestAccept(t *testing.T) {
 }
 
 func TestMove(t *testing.T) {
-    msgServer, context := setupMsgServer(t)
+    msgServer, keeper, context := setupMsgServer(t)
+	acc, _ := sdk.AccAddressFromBech32(alice)
+    keeper.AccountKeeper.NewAccountWithAddress(sdk.UnwrapSDKContext(context),acc)
+	acc, _ = sdk.AccAddressFromBech32(bob)
+    keeper.AccountKeeper.NewAccountWithAddress(sdk.UnwrapSDKContext(context),acc)
     createResponse, err := msgServer.Invite(context, &types.MsgInvite{
         Creator: alice,
-        Opponent: bob,
     })
     require.Nil(t, err)
     require.EqualValues(t, types.MsgInviteResponse{
         GameIndex: 1,
-        X:alice,
-        O:bob,
     }, *createResponse)
 
     _, err = msgServer.Accept(context, &types.MsgAccept{

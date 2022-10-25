@@ -6,6 +6,8 @@ import (
 	"github.com/cjcobb23/tictactoe/x/tictactoe/keeper"
 	"github.com/cjcobb23/tictactoe/x/tictactoe/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -36,11 +38,22 @@ func TictactoeKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"TictactoeParams",
 	)
+	accountSubspace := typesparams.NewSubspace(cdc,
+		types.Amino,
+		storeKey,
+		memStoreKey,
+		authtypes.ModuleName,
+	)
+    maccPerms := map[string][]string{}
+    accountKeeper := authkeeper.NewAccountKeeper(
+		cdc, storeKey, accountSubspace, authtypes.ProtoBaseAccount, maccPerms,
+	)
 	k := keeper.NewKeeper(
 		cdc,
 		storeKey,
 		memStoreKey,
 		paramsSubspace,
+        accountKeeper,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
