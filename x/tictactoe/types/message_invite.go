@@ -9,7 +9,7 @@ const TypeMsgInvite = "invite"
 
 var _ sdk.Msg = &MsgInvite{}
 
-func NewMsgInvite(creator string, opponent string) *MsgInvite {
+func NewMsgInvite(creator string) *MsgInvite {
 	return &MsgInvite{
 		Creator:  creator,
 	}
